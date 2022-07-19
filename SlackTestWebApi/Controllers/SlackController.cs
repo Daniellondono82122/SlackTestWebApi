@@ -1,19 +1,36 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace SlackTestWebApi.Controllers
+﻿namespace SlackTestWebApi.Controllers
 {
-    public class SlackController : Controller
+    using Microsoft.AspNetCore.Mvc;
+    using Domain.Dtos;
+    using Services.Services;
+
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SlackController : ControllerBase
     {
-        
-        public async Task<IActionResult> Test()
+        private readonly ILogger<SlackController> _logger;
+        private readonly ISlackService _slackService;
+
+        public SlackController(ILogger<SlackController> logger, ISlackService slackService)
+        {
+            _logger = logger;
+            _slackService = slackService;
+        }
+
+
+        [HttpPost(Name = "SendMessage")]
+        public async Task<IActionResult> SendMessageAsync([FromBody] PayloadMessage payloadMessage)
         {
             try
             {
-                return Ok();
+                var response = await _slackService.SendMessageAsync(payloadMessage);
+                if (response.Errors != null) return NotFound(response.Message);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(400, ex.Message);
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

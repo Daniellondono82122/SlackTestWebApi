@@ -11,4 +11,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SlackTestWebApi.Domain\SlackTestWebApi.Domain.csproj" />
+    <ProjectReference Include="..\SlackTestWebApi.Services\SlackTestWebApi.Services.csproj" />
+  </ItemGroup>
+
 </Project>
