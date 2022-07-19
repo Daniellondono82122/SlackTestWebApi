@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackTestWebApi", "SlackTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackTestWebApi.Services", "SlackTestWebApi.Services\SlackTestWebApi.Services.csproj", "{73C1E7FC-E840-4B2B-AB5E-1FFF6DFFD254}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlackTestWebApi.Data", "SlackTestWebApi.Data\SlackTestWebApi.Data.csproj", "{AF8D56EA-5E6B-4968-8839-4ADC21EC614E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{73C1E7FC-E840-4B2B-AB5E-1FFF6DFFD254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73C1E7FC-E840-4B2B-AB5E-1FFF6DFFD254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73C1E7FC-E840-4B2B-AB5E-1FFF6DFFD254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF8D56EA-5E6B-4968-8839-4ADC21EC614E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF8D56EA-5E6B-4968-8839-4ADC21EC614E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF8D56EA-5E6B-4968-8839-4ADC21EC614E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF8D56EA-5E6B-4968-8839-4ADC21EC614E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
