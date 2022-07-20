@@ -71,5 +71,21 @@
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPost("GetUserIdsByEmail")]
+        public async Task<IActionResult> GetUserIdsByEmail([FromBody] List<string> emails)
+        {
+            try
+            {
+                BaseResponseDto<List<ExternalUserDto>> response = await _slackService.GetUsersByEmailAsync(emails);
+                if (response.Errors != null) return NotFound(response.Message);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
