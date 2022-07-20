@@ -1,6 +1,7 @@
-﻿namespace SlackTestWebApi.Domain.Dtos
+﻿namespace SlackTestWebApi.Domain.Dtos.Slack
 {
     using Newtonsoft.Json;
+
     public class SendMessageResponseDto
     {
         [JsonProperty("ok")]

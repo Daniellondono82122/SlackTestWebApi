@@ -5,7 +5,9 @@
     using Domain.Dtos;
     using Domain.Enum;
     using Microsoft.Extensions.Configuration;
+    using Domain.Dtos.Slack;
     using Utils;
+    using SlackTestWebApi.Services.Constants;
 
     public class SlackService : ISlackService
     {
@@ -21,10 +23,12 @@
                 .Where(x=>x.UserType != UserTypeEnum.Carrier).Select(u => u.ExternalId));
             var threadId = await PostMessage(channelId, payloadMessage);
             var slackResponseDto = new SlackResponseDto();
+
             if (payloadMessage.ThreadId is null)
             {
                 slackResponseDto.ThreadId = threadId;
             }
+
             return new BaseResponseDto<SlackResponseDto>
             {
                 Message = "Message sent!",
@@ -36,7 +40,7 @@
         {
             SlackClientUtil slackClientUtil = new(_configuration);
 
-            SlackClientResponseDto slackClientResponse = await slackClientUtil.Post<SlackClientResponseDto>(Constants.SlackMethods.OpenConversation, $"users={string.Join(",", externalIds)}&pretty = 1");
+            ConversationOpenResponseDto slackClientResponse = await slackClientUtil.Post<ConversationOpenResponseDto>(SlackMethods.OpenConversation, $"users={string.Join(",", externalIds)}&pretty = 1");
 
             return slackClientResponse.Channel.Id;
         }
@@ -46,14 +50,14 @@
             SlackClientUtil slackClientUtil = new(_configuration);
 
             var querystring = $"channel={channelId}&text={payloadMessage.Message}";
-            if (payloadMessage.ThreadId is not null)
+            if (!string.IsNullOrEmpty(payloadMessage.ThreadId))
             {
                 querystring += "&thread_ts={payloadMessage.ThreadId}";
             }
 
-            await slackClientUtil.Post<object>(Constants.SlackMethods.PostMessage, querystring);
+            SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackMethods.PostMessage, querystring);
 
-            return String.Empty;
+            return sendMessageResponse.Ts;
         }
     }
 }
