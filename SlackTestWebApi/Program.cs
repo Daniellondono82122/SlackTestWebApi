@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ISlackService, SlackService>();
-builder.Services.AddScoped<IEventsService, EventsService>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 var app = builder.Build();
 
