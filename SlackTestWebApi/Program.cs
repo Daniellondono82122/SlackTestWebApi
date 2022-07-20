@@ -3,16 +3,6 @@ using SlackTestWebApi.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(opt =>
-{
-    opt.AddPolicy(name: "CorsPolicy", builder =>
-    {
-        builder.AllowAnyOrigin()
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
