@@ -35,6 +35,7 @@
             if (payloadMessage.ThreadId is null)
             {
                 slackResponseDto.ThreadId = threadId;
+                slackResponseDto.ChannelId = channelId;
             }
 
             return new BaseResponseDto<SlackResponseDto>
