@@ -3,6 +3,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Domain.Dtos;
     using Services.Services;
+    using Newtonsoft.Json;
+    using SlackTestWebApi.Domain.Dtos.Slack;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -18,7 +20,7 @@
         }
 
 
-        [HttpPost(Name = "SendMessage")]
+        [HttpPost("SendMessage")]
         public async Task<IActionResult> SendMessageAsync([FromBody] PayloadMessage payloadMessage)
         {
             try
@@ -32,6 +34,26 @@
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpPost("Event")]
+        public IActionResult Event([FromBody] dynamic request)
+        {
+            if (request != null)
+            {
+                switch (request.type)
+                {
+                    case "url_verification":
+                        return Content(request.challenge);
+                    case "event_callback":
+                        var eventRequest = JsonConvert.DeserializeObject<SlackEventMessage>(request.ToString());
+                        break;                     
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }

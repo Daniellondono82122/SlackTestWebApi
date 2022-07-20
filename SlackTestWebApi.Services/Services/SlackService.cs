@@ -19,9 +19,17 @@
 
         public async Task<BaseResponseDto<SlackResponseDto>> SendMessageAsync(PayloadMessage payloadMessage)
         {
-            var channelId = await OpenConversation(payloadMessage.Users
-                .Where(x=>x.UserType != UserTypeEnum.Carrier).Select(u => u.ExternalId));
-            var threadId = await PostMessage(channelId, payloadMessage);
+            string channelId = payloadMessage.ChannelId;
+            string threadId;
+
+            if (string.IsNullOrEmpty(payloadMessage.ChannelId))
+            {
+                channelId = await OpenConversation(payloadMessage.Users
+                    .Where(x => x.UserType != UserTypeEnum.Carrier).Select(u => u.ExternalId));
+            }
+
+            threadId = await PostMessage(channelId, payloadMessage);
+
             var slackResponseDto = new SlackResponseDto();
 
             if (payloadMessage.ThreadId is null)
