@@ -12,10 +12,10 @@
     {
         private readonly ILogger<SlackController> _logger;
         private readonly ISlackService _slackService;
-        private readonly IEventsService _eventsService;
+        private readonly IEventService _eventsService;
 
         public SlackController(ILogger<SlackController> logger, ISlackService slackService,
-            IEventsService eventsService)
+            IEventService eventsService)
         {
             _logger = logger;
             _slackService = slackService;
@@ -40,7 +40,7 @@
         }
 
         [HttpPost("Event")]
-        public async Task<IActionResult> Event([FromBody] dynamic request)
+        public async Task<IActionResult> Event([FromBody] object request)
         {
             try
             {
@@ -48,16 +48,18 @@
                 {
                     throw new BadHttpRequestException("request null");
                 }
-                switch (request.type)
+
+                var validationMessage = JsonConvert.DeserializeObject<ValidationMessage>(request.ToString());
+
+                switch (validationMessage.Type)
                 {
                     case "url_verification":
-                        return Content(request.challenge);
+                        return Content(validationMessage.Challenge);
 
                     case "event_callback":
                         var eventRequest = JsonConvert.DeserializeObject<SlackEventMessage>(request.ToString());
-                        BaseResponseDto<SlackResponseDto> response = await _eventsService.Handle(eventRequest);
-                        if (response.Errors != null) return NotFound(response.Message);
-                        return Ok(response);
+                        await _eventsService.ProcessUserMessage(eventRequest);
+                        return Ok();
 
                     default:
                         throw new BadHttpRequestException(JsonConvert.SerializeObject(request));

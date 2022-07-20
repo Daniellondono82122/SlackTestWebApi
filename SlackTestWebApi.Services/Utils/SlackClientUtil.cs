@@ -17,7 +17,7 @@
         public async Task<T> Post<T>(string method, string querystring = "")
         {
             var slackUrl = _configuration.GetSection("SlackUrl").Value;
-            var token = _configuration.GetSection("SlackBotToken").Value;
+            var token = $"{_configuration.GetSection("TokenPrefix").Value}-{_configuration.GetSection("SlackBotToken").Value}";
 
             var resultUrl = $"{slackUrl}/{method}?{querystring}";
 
