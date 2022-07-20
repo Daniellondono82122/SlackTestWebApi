@@ -1,4 +1,4 @@
-﻿namespace SlackTestWebApi.Domain.Dtos
+﻿namespace SlackTestWebApi.Domain.Dtos.Slack
 {
     using Newtonsoft.Json;
 
