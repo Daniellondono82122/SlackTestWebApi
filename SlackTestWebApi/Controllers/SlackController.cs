@@ -12,11 +12,14 @@
     {
         private readonly ILogger<SlackController> _logger;
         private readonly ISlackService _slackService;
+        private readonly IEventsService _eventsService;
 
-        public SlackController(ILogger<SlackController> logger, ISlackService slackService)
+        public SlackController(ILogger<SlackController> logger, ISlackService slackService,
+            IEventsService eventsService)
         {
             _logger = logger;
             _slackService = slackService;
+            _eventsService = eventsService;
         }
 
 
@@ -37,23 +40,34 @@
         }
 
         [HttpPost("Event")]
-        public IActionResult Event([FromBody] dynamic request)
+        public async Task<IActionResult> Event([FromBody] dynamic request)
         {
-            if (request != null)
+            try
             {
+                if (request is null)
+                {
+                    throw new BadHttpRequestException("request null");
+                }
                 switch (request.type)
                 {
                     case "url_verification":
                         return Content(request.challenge);
+
                     case "event_callback":
                         var eventRequest = JsonConvert.DeserializeObject<SlackEventMessage>(request.ToString());
-                        break;                     
+                        BaseResponseDto<SlackResponseDto> response = await _eventsService.Handle(eventRequest);
+                        if (response.Errors != null) return NotFound(response.Message);
+                        return Ok(response);
+
+                    default:
+                        throw new BadHttpRequestException(JsonConvert.SerializeObject(request));
                 }
-
-                return Ok();
             }
-
-            return BadRequest();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
