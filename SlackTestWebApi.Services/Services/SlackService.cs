@@ -17,6 +17,25 @@
             _configuration = configuration;
         }
 
+        public async Task<BaseResponseDto<List<ExternalUserDto>>> GetUsersByEmailAsync(List<string> emails)
+        {
+            List<ExternalUserDto> externalUserList = new();
+
+            SlackClientUtil slackClientUtil = new(_configuration);
+
+            foreach(var email in emails)
+            {
+                SlackUserProfile slackUserProfile = await slackClientUtil.Post<SlackUserProfile>(SlackMethods.LookupUserByEmail, $"email={email}");
+                externalUserList.Add(new ExternalUserDto { Email = email, ExternalId = slackUserProfile.User.Id });
+            }
+
+            return new BaseResponseDto<List<ExternalUserDto>>
+            {
+                Message = "Sucessful",
+                Result = externalUserList
+            };
+        }
+
         public async Task<BaseResponseDto<SlackResponseDto>> SendMessageAsync(PayloadMessage payloadMessage)
         {
             string channelId = payloadMessage.ChannelId;
