@@ -90,7 +90,7 @@
 
             if (payloadMessage.ShowButtons)
             {
-                var attachmentSerialized = "[{\"text\":\"Accept offer?\",\"fallback\":\"You are unable to choose an offer\",\"callback_id\":\"offer_choose\",\"color\":\"#2AAAE2\",\"attachment_type\":\"default\",\"actions\":[{\"name\":\"choose\",\"text\":\"YES\",\"type\":\"button\",\"style\":\"primary\",\"value\":\"yes_button\",\"confirm\":{\"title\":\"Are you sure?\",\"text\":\"Accept offer?\",\"ok_text\":\"Yes\",\"dismiss_text\":\"No\"}},{\"name\":\"choose\",\"text\":\"NO\",\"type\":\"button\",\"value\":\"no_button\",\"style\":\"danger\"}]}]";
+                var attachmentSerialized = "[{\"text\":\"Accept offer?\",\"fallback\":\"You are unable to choose an offer\",\"callback_id\":\"offer_choose\",\"color\":\"#2AAAE2\",\"attachment_type\":\"default\",\"actions\":[{\"name\":\"choose\",\"text\":\"Accept\",\"type\":\"button\",\"style\":\"primary\",\"value\":\"yes_button\",\"confirm\":{\"title\":\"Are you sure?\",\"text\":\"Accept offer?\",\"ok_text\":\"Yes\",\"dismiss_text\":\"No\"}},{\"name\":\"choose\",\"text\":\"Decline\",\"type\":\"button\",\"value\":\"no_button\",\"style\":\"danger\"}]}]";
                 try
                 {
                     querystring += $"&attachments={HttpUtility.UrlEncode(attachmentSerialized)}";
