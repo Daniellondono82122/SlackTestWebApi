@@ -8,6 +8,6 @@
         public static readonly string LookupUserByEmail = "users.lookupByEmail";     
         
         //Constants
-        public static readonly string ArriveIconUrl = "https://avatars.slack-edge.com/2018-02-14/315190559635_3f438f6bda7bafeb3716_88.jpg";        
+        public static readonly string ArriveIconUrl = "https://tscscreencastliveeast.blob.core.windows.net/uploads/g0003020mGRD9BsW6pE5mrIA0Bi5j/2022-07-[…]T19%3A25%3A13Z&se=2022-07-22T19%3A30%3A13Z&sp=r";        
     }
 }
