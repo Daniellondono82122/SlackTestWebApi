@@ -16,15 +16,18 @@
 
         public async Task ProcessUserMessage(SlackEventMessage eventRequest)
         {
-            MessageDto messageDto = new MessageDto
+            if (!string.IsNullOrEmpty(eventRequest.Event.ThreadTs))
             {
-                ExternalId = eventRequest.Event.Ts,
-                Date = DateTime.UtcNow,
-                Message = eventRequest.Event.Text
-            };
+                MessageDto messageDto = new MessageDto
+                {
+                    ExternalId = eventRequest.Event.ThreadTs,
+                    Date = DateTime.UtcNow,
+                    Message = eventRequest.Event.Text
+                };
 
-            await _slackHub.Clients.Group(eventRequest.Event.Ts)
-            .NotifyThread(eventRequest.Event.Ts, JsonConvert.SerializeObject(messageDto));
+                await _slackHub.Clients.Group(eventRequest.Event.ThreadTs)
+                .NotifyThread(eventRequest.Event.ThreadTs, JsonConvert.SerializeObject(messageDto));
+            }
         }
     }
 }
