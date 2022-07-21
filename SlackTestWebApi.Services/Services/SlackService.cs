@@ -25,7 +25,7 @@
 
             foreach (var email in emails)
             {
-                SlackUserProfile slackUserProfile = await slackClientUtil.Post<SlackUserProfile>(SlackMethods.LookupUserByEmail, $"email={email}");
+                SlackUserProfile slackUserProfile = await slackClientUtil.Post<SlackUserProfile>(SlackConstants.LookupUserByEmail, $"email={email}");
                 externalUserList.Add(new ExternalUserDto { Email = email, ExternalId = slackUserProfile.User.Id });
             }
 
@@ -65,7 +65,7 @@
         {
             SlackClientUtil slackClientUtil = new(_configuration);
 
-            ConversationOpenResponseDto slackClientResponse = await slackClientUtil.Post<ConversationOpenResponseDto>(SlackMethods.OpenConversation, $"users={string.Join(",", externalIds)}&pretty = 1");
+            ConversationOpenResponseDto slackClientResponse = await slackClientUtil.Post<ConversationOpenResponseDto>(SlackConstants.OpenConversation, $"users={string.Join(",", externalIds)}&pretty = 1");
 
             return slackClientResponse.Channel.Id;
         }
@@ -74,7 +74,7 @@
         {
             SlackClientUtil slackClientUtil = new(_configuration);
 
-            var querystring = $"channel={channelId}&text={payloadMessage.Message}";
+            var querystring = $"channel={channelId}&text={payloadMessage.Message}&icon_url={SlackConstants.ArriveIconUrl}";
             if (!string.IsNullOrEmpty(payloadMessage.ThreadId))
             {
                 querystring += $"&thread_ts={payloadMessage.ThreadId}";
@@ -85,7 +85,7 @@
                 querystring += $"&username={alias}";
             }
 
-            SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackMethods.PostMessage, querystring);
+            SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackConstants.PostMessage, querystring);
 
             return sendMessageResponse.Message.ThreadTs ?? sendMessageResponse.Ts;
         }
