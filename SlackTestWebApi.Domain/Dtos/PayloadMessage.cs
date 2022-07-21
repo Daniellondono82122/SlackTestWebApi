@@ -9,5 +9,6 @@
         public string Message { get; set; }
         public int? OfferId { get; set; }
         public int? LoadNumber { get; set; }
+        public bool ShowButtons { get; set; }
     }
 }

@@ -8,6 +8,9 @@
     using Domain.Dtos.Slack;
     using Utils;
     using SlackTestWebApi.Services.Constants;
+    using System;
+    using Newtonsoft.Json.Linq;
+    using System.Web;
 
     public class SlackService : ISlackService
     {
@@ -85,9 +88,26 @@
                 querystring += $"&username={alias}";
             }
 
+            if (payloadMessage.ShowButtons)
+            {
+                var attachmentSerialized = "[{\"text\":\"Accept offer?\",\"fallback\":\"You are unable to choose an offer\",\"callback_id\":\"offer_choose\",\"color\":\"#2AAAE2\",\"attachment_type\":\"default\",\"actions\":[{\"name\":\"choose\",\"text\":\"YES\",\"type\":\"button\",\"style\":\"primary\",\"value\":\"yes_button\",\"confirm\":{\"title\":\"Are you sure?\",\"text\":\"Accept offer?\",\"ok_text\":\"Yes\",\"dismiss_text\":\"No\"}},{\"name\":\"choose\",\"text\":\"NO\",\"type\":\"button\",\"value\":\"no_button\",\"style\":\"danger\"}]}]";
+                try
+                {
+                    querystring += $"&attachments={HttpUtility.UrlEncode(attachmentSerialized)}";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
+
+
+            }
+
             SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackConstants.PostMessage, querystring);
 
             return sendMessageResponse.Message.ThreadTs ?? sendMessageResponse.Ts;
         }
+
     }
 }
