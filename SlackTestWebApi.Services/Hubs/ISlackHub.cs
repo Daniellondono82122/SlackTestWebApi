@@ -2,7 +2,7 @@
 {
     public interface ISlackHub
     {
-        Task NotifyThread(string ChannelId, string notificationMessage);
+        Task NotifyThread(string ThreadId, string notificationMessage);
         Task SendAsync(string notificationGroup, string connectionId);
     }
 }

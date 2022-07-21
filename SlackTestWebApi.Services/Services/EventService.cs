@@ -3,6 +3,8 @@
     using Microsoft.AspNetCore.SignalR;
     using Domain.Dtos.Slack;
     using Hubs;
+    using SlackTestWebApi.Domain.Dtos;
+    using Newtonsoft.Json;
 
     public class EventService : IEventService
     {
@@ -14,8 +16,15 @@
 
         public async Task ProcessUserMessage(SlackEventMessage eventRequest)
         {
-            await _slackHub.Clients.Group(eventRequest.Event.ThreadTs)
-            .NotifyThread(eventRequest.Event.ThreadTs, eventRequest.Event.Text);
+            MessageDto messageDto = new MessageDto
+            {
+                ExternalId = eventRequest.Event.Ts,
+                Date = DateTime.UtcNow,
+                Message = eventRequest.Event.Text
+            };
+
+            await _slackHub.Clients.Group(eventRequest.Event.Ts)
+            .NotifyThread(eventRequest.Event.Ts, JsonConvert.SerializeObject(messageDto));
         }
     }
 }

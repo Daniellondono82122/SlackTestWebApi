@@ -80,7 +80,7 @@
             var querystring = $"channel={channelId}&text={payloadMessage.Message}";
             if (!string.IsNullOrEmpty(payloadMessage.ThreadId))
             {
-                querystring += "&thread_ts={payloadMessage.ThreadId}";
+                querystring += $"&thread_ts={payloadMessage.ThreadId}";
             }
 
             SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackMethods.PostMessage, querystring);
