@@ -23,7 +23,7 @@
 
             SlackClientUtil slackClientUtil = new(_configuration);
 
-            foreach(var email in emails)
+            foreach (var email in emails)
             {
                 SlackUserProfile slackUserProfile = await slackClientUtil.Post<SlackUserProfile>(SlackMethods.LookupUserByEmail, $"email={email}");
                 externalUserList.Add(new ExternalUserDto { Email = email, ExternalId = slackUserProfile.User.Id });
@@ -38,7 +38,7 @@
 
         public async Task<BaseResponseDto<SlackResponseDto>> SendMessageAsync(PayloadMessage payloadMessage)
         {
-            string channelId = payloadMessage.ChannelId;
+            string? channelId = payloadMessage.ChannelId;
             string threadId;
 
             if (string.IsNullOrEmpty(payloadMessage.ChannelId))
@@ -47,15 +47,12 @@
                     .Where(x => x.UserType != UserTypeEnum.Carrier).Select(u => u.ExternalId));
             }
 
-            threadId = await PostMessage(channelId, payloadMessage);
+            threadId = await PostMessage(channelId, payloadMessage, payloadMessage.Users.FirstOrDefault(u => u.UserType == UserTypeEnum.Carrier).Name);
 
             var slackResponseDto = new SlackResponseDto();
 
-            if (payloadMessage.ThreadId is null)
-            {
-                slackResponseDto.ThreadId = threadId;
-                slackResponseDto.ChannelId = channelId;
-            }
+            slackResponseDto.ThreadId = threadId;
+            slackResponseDto.ChannelId = channelId;
 
             return new BaseResponseDto<SlackResponseDto>
             {
@@ -73,7 +70,7 @@
             return slackClientResponse.Channel.Id;
         }
 
-        private async Task<string> PostMessage(string channelId, PayloadMessage payloadMessage)
+        private async Task<string> PostMessage(string? channelId, PayloadMessage payloadMessage, string alias)
         {
             SlackClientUtil slackClientUtil = new(_configuration);
 
@@ -83,9 +80,14 @@
                 querystring += $"&thread_ts={payloadMessage.ThreadId}";
             }
 
+            if (!string.IsNullOrEmpty(alias))
+            {
+                querystring += $"&username={alias}";
+            }
+
             SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackMethods.PostMessage, querystring);
 
-            return sendMessageResponse.Ts;
+            return sendMessageResponse.Message.ThreadTs ?? sendMessageResponse.Ts;
         }
     }
 }

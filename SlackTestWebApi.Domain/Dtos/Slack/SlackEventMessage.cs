@@ -1,8 +1,9 @@
 ﻿namespace SlackTestWebApi.Domain.Dtos.Slack
 {
     using System.Text.Json.Serialization;
+    using Newtonsoft.Json;
 
-    public class Authorization
+      public class Authorization
     {
         [JsonPropertyName("enterprise_id")]
         public object EnterpriseId { get; set; }
@@ -67,6 +68,7 @@
         [JsonPropertyName("blocks")]
         public List<Block> Blocks { get; set; }
 
+        [JsonProperty("thread_ts")]
         [JsonPropertyName("thread_ts")]
         public string ThreadTs { get; set; }
 
@@ -100,6 +102,7 @@
         [JsonPropertyName("event_id")]
         public string EventId { get; set; }
 
+        [JsonProperty("event_time")]
         [JsonPropertyName("event_time")]
         public int EventTime { get; set; }
 
@@ -112,6 +115,4 @@
         [JsonPropertyName("event_context")]
         public string EventContext { get; set; }
     }
-
-
 }
