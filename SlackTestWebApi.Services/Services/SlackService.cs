@@ -77,7 +77,7 @@
         {
             SlackClientUtil slackClientUtil = new(_configuration);
 
-            var querystring = $"channel={channelId}&text={payloadMessage.Message}&icon_url={SlackConstants.ArriveIconUrl}";
+            var querystring = $"channel={channelId}&icon_url={SlackConstants.ArriveIconUrl}";
             if (!string.IsNullOrEmpty(payloadMessage.ThreadId))
             {
                 querystring += $"&thread_ts={payloadMessage.ThreadId}";
@@ -90,18 +90,8 @@
 
             if (payloadMessage.ShowButtons)
             {
-                var attachmentSerialized = "[{\"text\":\"Accept offer?\",\"fallback\":\"You are unable to choose an offer\",\"callback_id\":\"offer_choose\",\"color\":\"#2AAAE2\",\"attachment_type\":\"default\",\"actions\":[{\"name\":\"choose\",\"text\":\"Accept\",\"type\":\"button\",\"style\":\"primary\",\"value\":\"yes_button\",\"confirm\":{\"title\":\"Are you sure?\",\"text\":\"Accept offer?\",\"ok_text\":\"Yes\",\"dismiss_text\":\"No\"}},{\"name\":\"choose\",\"text\":\"Decline\",\"type\":\"button\",\"value\":\"no_button\",\"style\":\"danger\"}]}]";
-                try
-                {
-                    querystring += $"&attachments={HttpUtility.UrlEncode(attachmentSerialized)}";
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw;
-                }
-
-
+                var msg = SlackConstants.BasePayloadMsg.Replace("PayloadMessage", payloadMessage.Message);
+                querystring += $"&blocks={HttpUtility.UrlEncode(msg.Replace("AddElement", SlackConstants.AddButtons))}";
             }
 
             SendMessageResponseDto sendMessageResponse = await slackClientUtil.Post<SendMessageResponseDto>(SlackConstants.PostMessage, querystring);

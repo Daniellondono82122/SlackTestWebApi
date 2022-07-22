@@ -87,5 +87,26 @@
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        [HttpPost("Actions")]
+        public async Task<IActionResult> Actions()
+        {
+            try
+            {
+                foreach (var key in HttpContext.Request.Form.Keys)
+                {
+                    BaseResponseDto<bool> response = await _eventsService.ProcessOfferAnswer(HttpContext.Request.Form[key]);
+                    if (response.Errors != null) return NotFound(response.Message);
+                    return Ok(response);
+                }
+
+                return await Task.FromResult(Ok());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
