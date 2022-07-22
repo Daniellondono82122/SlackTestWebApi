@@ -93,14 +93,9 @@
         {
             try
             {
-                foreach (var key in HttpContext.Request.Form.Keys)
-                {
-                    BaseResponseDto<bool> response = await _eventsService.ProcessOfferAnswer(HttpContext.Request.Form[key]);
-                    if (response.Errors != null) return NotFound(response.Message);
-                    return Ok(response);
-                }
-
-                return await Task.FromResult(Ok());
+                BaseResponseDto<bool> response = await _eventsService.ProcessOfferAnswer(HttpContext.Request.Form[HttpContext.Request.Form.Keys.First()]);
+                if (response.Errors != null) return NotFound(response.Message);
+                return Ok(response);
             }
             catch (Exception ex)
             {
