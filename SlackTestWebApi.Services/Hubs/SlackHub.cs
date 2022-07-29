@@ -12,6 +12,12 @@
         }
 
         [Transaction]
+        public async Task SendMessageToGroup(string groupid, string message)
+        {
+            await _context.Clients.Group(groupid).SendAsync("MessageHandler", message);
+        }
+
+        [Transaction]
         public async Task JoinThreadGroup(string notificationGroup)
         {
             await _context.Groups.AddToGroupAsync(Context.ConnectionId, notificationGroup);
